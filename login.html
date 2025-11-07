@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusShare - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E86AB;
+            --primary-dark: #1a6a8a;
+            --secondary: #A23B72;
+            --accent: #F18F01;
+            --light: #F7F9FC;
+            --dark: #2B2D42;
+            --gray: #8D99AE;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --radius: 10px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .login-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            opacity: 0.9;
+        }
+        
+        .login-tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .login-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .login-tab.active {
+            background: white;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .login-body {
+            padding: 30px;
+        }
+        
+        .login-form {
+            display: none;
+        }
+        
+        .login-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #eee;
+        }
+        
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            color: var(--gray);
+        }
+        
+        .social-login {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .social-btn:hover {
+            background: #f9f9f9;
+        }
+        
+        .campus-login {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .campus-login a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .campus-login a:hover {
+            text-decoration: underline;
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+            width: 100%;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .user-details h2 {
+            margin-bottom: 5px;
+        }
+        
+        .user-role {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .dashboard-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .dashboard-content {
+            padding: 20px 0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .admin-features {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-card {
+            border: 1px solid #eee;
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .recent-activity {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+        
+        .activity-list {
+            list-style: none;
+        }
+        
+        .activity-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+        
+        .activity-details h4 {
+            margin-bottom: 5px;
+        }
+        
+        .activity-time {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 30px 0 20px;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-nav {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            
+            .dashboard-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .social-login {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <section id="loginSection">
+        <header>
+            <div class="container">
+                <nav class="navbar">
+                    <a href="login.html" class="logo">
+                        <span class="logo-icon">📚</span>
+                        <span>CampusShare</span>
+                    </a>
+                </nav>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="container">
+                <div class="login-container">
+                    <div class="login-header">
+                        <h1>Welcome to CampusShare</h1>
+                        <p>Share academic resources within your campus community</p>
+                    </div>
+                    
+                    <div class="login-tabs">
+                        <div class="login-tab active" data-tab="student">Student Login</div>
+                        <div class="login-tab" data-tab="admin">Admin Login</div>
+                    </div>
+                    
+                    <div class="login-body">
+                        <!-- Student Login Form -->
+                        <form class="login-form active" id="studentLoginForm">
+                            <div class="form-group">
+                                <label for="studentEmail">Campus Email</label>
+                                <div class="input-with-icon">
+                                    <input type="email" id="studentEmail" class="form-control" placeholder="your.name@campus.edu" required>
+                                    <i class="fas fa-envelope input-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="studentPassword">Password</label>
+                                <div class="input-with-icon">
+                                    <input type="password" id="studentPassword" class="form-control" placeholder="Enter your password" required>
+                                    <i class="fas fa-lock input-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="form-options">
+                                <div class="remember-me">
+                                    <input type="checkbox" id="rememberStudent">
+                                    <label for="rememberStudent">Remember me</label>
+                                </div>
+                                <a href="#" class="forgot-password">Forgot password?</a>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Login as Student
+                            </button>
+                            
+                            <div class="divider">
+                                <span>Or continue with</span>
+                            </div>
+                            
+                            <div class="social-login">
+                                <button type="button" class="social-btn">
+                                    <i class="fab fa-google" style="color: #DB4437;"></i> Google
+                                </button>
+                                <button type="button" class="social-btn">
+                                    <i class="fab fa-microsoft" style="color: #0078D7;"></i> Microsoft
+                                </button>
+                            </div>
+                            
+                            <div class="campus-login">
+                                <a href="#">Login with campus credentials</a>
+                            </div>
+                        </form>
+                        
+                        <!-- Admin Login Form -->
+                        <form class="login-form" id="adminLoginForm">
+                            <div class="form-group">
+                                <label for="adminId">Admin ID</label>
+                                <div class="input-with-icon">
+                                    <input type="text" id="adminId" class="form-control" placeholder="Enter your admin ID" required>
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="adminPassword">Password</label>
+                                <div class="input-with-icon">
+                                    <input type="password" id="adminPassword" class="form-control" placeholder="Enter your password" required>
+                                    <i class="fas fa-lock input-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="form-options">
+                                <div class="remember-me">
+                                    <input type="checkbox" id="rememberAdmin">
+                                    <label for="rememberAdmin">Remember me</label>
+                                </div>
+                                <a href="#" class="forgot-password">Forgot password?</a>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Login as Admin
+                            </button>
+                            
+                            <div class="login-footer">
+                                <p>For admin access, please contact system administrator</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-column">
+                        <h3>CampusShare</h3>
+                        <p>Connecting students to share academic resources and build a sustainable campus community.</p>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Quick Links</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Resources</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h3>Support</h3>
+                        <ul class="footer-links">
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Safety Guidelines</a></li>
+                            <li><a href="#">Report an Issue</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="copyright">
+                    <p>&copy; 2023 CampusShare. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </section>
+    
+    <!-- Student Dashboard -->
+    <section class="dashboard" id="studentDashboard">
+        <div class="dashboard-header">
+            <div class="container">
+                <div class="dashboard-nav">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="user-details">
+                            <h2>Sarah Johnson</h2>
+                            <div class="user-role">Computer Science Student</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-actions">
+                        <button class="btn btn-outline" id="studentNotifications">
+                            <i class="fas fa-bell"></i> Notifications
+                        </button>
+                        <button class="btn btn-outline" id="studentLogout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="dashboard-content">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Active Listings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">Resources Shared</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">Avg Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$142</div>
+                        <div class="stat-label">Money Saved</div>
+                    </div>
+                </div>
+                
+                <div class="recent-activity">
+                    <h2 class="section-title">Recent Activity</h2>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Calculus textbook listed</h4>
+                                <p>Your listing for "Calculus: Early Transcendentals" is now active</p>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-comment"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>New message from Alex</h4>
+                                <p>Alex inquired about your Organic Chemistry notes</p>
+                                <div class="activity-time">5 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>New rating received</h4>
+                                <p>Michael gave you 5 stars for the Physics flashcards</p>
+                                <div class="activity-time">1 day ago</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Admin Dashboard -->
+    <section class="dashboard" id="adminDashboard">
+        <div class="dashboard-header">
+            <div class="container">
+                <div class="dashboard-nav">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="user-details">
+                            <h2>Dr. Robert Wilson</h2>
+                            <div class="user-role">System Administrator</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-actions">
+                        <button class="btn btn-outline" id="adminNotifications">
+                            <i class="fas fa-bell"></i> Alerts
+                        </button>
+                        <button class="btn btn-outline" id="adminLogout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="dashboard-content">
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">Total Listings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">892</div>
+                        <div class="stat-label">Verified Students</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Pending Reports</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">98.7%</div>
+                        <div class="stat-label">System Uptime</div>
+                    </div>
+                </div>
+                
+                <div class="admin-features">
+                    <h2 class="section-title">Admin Controls</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <h3>User Management</h3>
+                            <p>Manage student accounts and permissions</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <h3>Content Moderation</h3>
+                            <p>Review reported listings and users</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h3>Analytics</h3>
+                            <p>View platform usage statistics</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <h3>System Settings</h3>
+                            <p>Configure platform parameters</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="recent-activity">
+                    <h2 class="section-title">System Alerts</h2>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Unverified user signup</h4>
+                                <p>5 new users registered without campus email verification</p>
+                                <div class="activity-time">30 minutes ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-flag" style="color: var(--danger);"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Content reported</h4>
+                                <p>3 listings flagged for review by users</p>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-server" style="color: var(--success);"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>System backup completed</h4>
+                                <p>Nightly database backup completed successfully</p>
+                                <div class="activity-time">6 hours ago</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // DOM Elements
+        const loginSection = document.getElementById('loginSection');
+        const studentDashboard = document.getElementById('studentDashboard');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const loginTabs = document.querySelectorAll('.login-tab');
+        const loginForms = document.querySelectorAll('.login-form');
+        const studentLoginForm = document.getElementById('studentLoginForm');
+        const adminLoginForm = document.getElementById('adminLoginForm');
+        const studentLogoutBtn = document.getElementById('studentLogout');
+        const adminLogoutBtn = document.getElementById('adminLogout');
+
+        // Sample credentials for demonstration
+        const studentCredentials = [
+            { email: "student@campus.edu", password: "student123" },
+            { email: "test@university.edu", password: "test123" }
+        ];
+
+        const adminCredentials = [
+            { id: "admin001", password: "admin123" },
+            { id: "superuser", password: "super123" }
+        ];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const currentUser = localStorage.getItem('currentUser');
+            const userRole = localStorage.getItem('userRole');
+            
+            if (currentUser && userRole) {
+                showDashboard(userRole);
+            }
+            
+            setupEventListeners();
+        });
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Login tab switching
+            loginTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    loginTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding form
+                    loginForms.forEach(form => form.classList.remove('active'));
+                    document.getElementById(`${tabName}LoginForm`).classList.add('active');
+                });
+            });
+
+            // Student login form submission
+            studentLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('studentEmail').value;
+                const password = document.getElementById('studentPassword').value;
+                
+                // Validate credentials
+                const isValid = studentCredentials.some(cred => 
+                    cred.email === email && cred.password === password);
+                
+                if (isValid) {
+                    // Store user session
+                    localStorage.setItem('currentUser', email);
+                    localStorage.setItem('userRole', 'student');
+                    
+                    // Redirect to home page
+                    window.location.href = 'home_page.html';
+                } else {
+                    alert('Invalid email or password. Please try again.');
+                }
+            });
+
+            // Admin login form submission
+            adminLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const adminId = document.getElementById('adminId').value;
+                const password = document.getElementById('adminPassword').value;
+                
+                // Validate credentials
+                const isValid = adminCredentials.some(cred => 
+                    cred.id === adminId && cred.password === password);
+                
+                if (isValid) {
+                    // Store user session
+                    localStorage.setItem('currentUser', adminId);
+                    localStorage.setItem('userRole', 'admin');
+                    
+                    // Show admin dashboard
+                    showDashboard('admin');
+                } else {
+                    alert('Invalid admin ID or password. Please try again.');
+                }
+            });
+
+            // Logout functionality
+            studentLogoutBtn.addEventListener('click', logout);
+            adminLogoutBtn.addEventListener('click', logout);
+        }
+
+        // Show the appropriate dashboard based on user role
+        function showDashboard(role) {
+            loginSection.style.display = 'none';
+            
+            if (role === 'student') {
+                studentDashboard.style.display = 'block';
+                adminDashboard.style.display = 'none';
+            } else if (role === 'admin') {
+                studentDashboard.style.display = 'none';
+                adminDashboard.style.display = 'block';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            // Clear user session
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userRole');
+            
+            // Show login section
+            loginSection.style.display = 'block';
+            studentDashboard.style.display = 'none';
+            adminDashboard.style.display = 'none';
+            
+            // Reset forms
+            studentLoginForm.reset();
+            adminLoginForm.reset();
+        }
+
+        // Demo login buttons for easier testing
+        function demoLogin(role) {
+            if (role === 'student') {
+                document.getElementById('studentEmail').value = 'student@campus.edu';
+                document.getElementById('studentPassword').value = 'student123';
+                document.getElementById('studentLoginForm').dispatchEvent(new Event('submit'));
+            } else if (role === 'admin') {
+                document.getElementById('adminId').value = 'admin001';
+                document.getElementById('adminPassword').value = 'admin123';
+                document.getElementById('adminLoginForm').dispatchEvent(new Event('submit'));
+            }
+        }
+    </script>
+
+    <!-- Demo buttons for testing (would be removed in production) -->
+    <div style="position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000;">
+        <button onclick="demoLogin('student')" style="padding: 10px; background: #2E86AB; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Demo Student Login
+        </button>
+        <button onclick="demoLogin('admin')" style="padding: 10px; background: #A23B72; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Demo Admin Login
+        </button>
+    </div>
+</body>
+</html>

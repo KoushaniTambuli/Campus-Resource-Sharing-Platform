@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusShare - QR Code Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #2E86AB;
+            --primary-dark: #1a6a8a;
+            --secondary: #A23B72;
+            --accent: #F18F01;
+            --light: #F7F9FC;
+            --dark: #2B2D42;
+            --gray: #8D99AE;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --radius: 10px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(46, 134, 171, 0.1);
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: var(--dark);
+        }
+        
+        .page-description {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: var(--gray);
+        }
+        
+        /* Menu Cards */
+        .menu-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .menu-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .menu-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .menu-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .menu-description {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        /* Sections */
+        .section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+        }
+        
+        /* Resource List */
+        .resource-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .resource-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            border: 1px solid #eee;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .resource-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .resource-type {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        .resource-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-available {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+        
+        .status-claimed {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-rented {
+            background: rgba(46, 134, 171, 0.1);
+            color: var(--primary);
+        }
+        
+        .resource-body {
+            padding: 20px;
+        }
+        
+        .resource-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .resource-description {
+            color: var(--gray);
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        .resource-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* QR Code Display */
+        .qr-display {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+        }
+        
+        #qr-code {
+            margin: 0 auto;
+            padding: 15px;
+            background: white;
+            border-radius: var(--radius);
+            display: inline-block;
+            box-shadow: var(--shadow);
+        }
+        
+        .qr-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* Form Styles */
+        .document-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary);
+        }
+        
+        .file-upload i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-list {
+            margin-top: 20px;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #f9f9f9;
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-icon {
+            color: var(--primary);
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-icon {
+            padding: 5px 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .btn-icon:hover {
+            color: var(--dark);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        /* Document Types */
+        .document-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .document-type {
+            border: 2px solid #eee;
+            border-radius: var(--radius);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .document-type:hover {
+            border-color: var(--primary);
+            background: rgba(46, 134, 171, 0.05);
+        }
+        
+        .document-type.selected {
+            border-color: var(--primary);
+            background: rgba(46, 134, 171, 0.1);
+        }
+        
+        .doc-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        /* Upload Progress */
+        .upload-progress {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Upload Success */
+        .upload-success {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .qr-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .resource-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <span class="logo-icon">📚</span>
+                    <span>CampusShare</span>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn btn-outline" id="backToHomeBtn">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <h1 class="page-title">QR Code Resource Management</h1>
+            <p class="page-description">Generate unique QR codes for your academic resources. Students can scan these codes to view details or claim items.</p>
+            
+            <!-- Menu Cards -->
+            <div class="menu-cards">
+                <div class="menu-card" id="addResourceCard">
+                    <div class="menu-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3 class="menu-title">Add New Resource</h3>
+                    <p class="menu-description">Create a new listing for textbooks, notes, or equipment and generate its unique QR code.</p>
+                    <button class="btn btn-primary">Add Resource</button>
+                </div>
+                
+                <div class="menu-card" id="myResourcesCard">
+                    <div class="menu-icon">
+                        <i class="fas fa-list-ul"></i>
+                    </div>
+                    <h3 class="menu-title">My Resources</h3>
+                    <p class="menu-description">View all your listed resources, manage availability, and access QR codes.</p>
+                    <button class="btn btn-primary">View Resources</button>
+                </div>
+                
+                <div class="menu-card" id="qrGeneratorCard">
+                    <div class="menu-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3 class="menu-title">QR Code Generator</h3>
+                    <p class="menu-description">Generate or reprint QR codes for your existing academic resources.</p>
+                    <button class="btn btn-primary">Generate Codes</button>
+                </div>
+            </div>
+            
+            <!-- Add Resource Section -->
+            <div class="section" id="addResourceSection">
+                <h2 class="section-title">
+                    <i class="fas fa-plus-circle"></i> Add New Resource
+                </h2>
+                
+                <div class="document-form">
+                    <div class="form-group">
+                        <label>Select Resource Type</label>
+                        <div class="document-types">
+                            <div class="document-type" data-type="textbook">
+                                <div class="doc-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div>Textbook</div>
+                            </div>
+                            <div class="document-type" data-type="notes">
+                                <div class="doc-icon">
+                                    <i class="fas fa-sticky-note"></i>
+                                </div>
+                                <div>Class Notes</div>
+                            </div>
+                            <div class="document-type" data-type="slides">
+                                <div class="doc-icon">
+                                    <i class="fas fa-presentation"></i>
+                                </div>
+                                <div>Lecture Slides</div>
+                            </div>
+                            <div class="document-type" data-type="equipment">
+                                <div class="doc-icon">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div>Lab Equipment</div>
+                            </div>
+                            <div class="document-type" data-type="other">
+                                <div class="doc-icon">
+                                    <i class="fas fa-file"></i>
+                                </div>
+                                <div>Other</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="resourceTitle">Resource Title</label>
+                            <input type="text" id="resourceTitle" class="form-control" placeholder="e.g., Introduction to Algorithms">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="resourceCourse">Course/Subject</label>
+                            <input type="text" id="resourceCourse" class="form-control" placeholder="e.g., Computer Science 101">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resourceDescription">Description</label>
+                        <textarea id="resourceDescription" class="form-control" rows="3" placeholder="Describe the resource, condition, edition, etc."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="resourceAuthor">Author/Professor</label>
+                            <input type="text" id="resourceAuthor" class="form-control" placeholder="e.g., Dr. Smith">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="resourceYear">Year/Semester</label>
+                            <input type="text" id="resourceYear" class="form-control" placeholder="e.g., 2023, Fall Semester">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="resourcePrice">Price/Rental Fee</label>
+                            <input type="text" id="resourcePrice" class="form-control" placeholder="e.g., $25 or Free">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="resourceLocation">Pickup Location</label>
+                            <input type="text" id="resourceLocation" class="form-control" placeholder="e.g., Main Library, Dorm A">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Upload Resource Image</label>
+                        <div class="file-upload" id="resourceFileUpload">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload or drag and drop</p>
+                            <p class="file-format">JPG, PNG (Max 5MB)</p>
+                            <input type="file" class="file-input" id="resourceFileInput" accept=".jpg,.jpeg,.png">
+                        </div>
+                        <div class="file-list" id="resourceFileList"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn btn-outline" id="cancelResourceAdd">Cancel</button>
+                        <button class="btn btn-primary" id="submitResourceAdd">Generate QR Code</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- My Resources Section -->
+            <div class="section" id="myResourcesSection">
+                <h2 class="section-title">
+                    <i class="fas fa-list-ul"></i> My Resources
+                </h2>
+                
+                <div class="resource-list" id="resourcesContainer">
+                    <!-- Resources will be dynamically added here -->
+                </div>
+            </div>
+            
+            <!-- QR Code Generator Section -->
+            <div class="section" id="qrGeneratorSection">
+                <h2 class="section-title">
+                    <i class="fas fa-qrcode"></i> QR Code Generator
+                </h2>
+                
+                <div class="form-group">
+                    <label for="resourceSelect">Select Resource</label>
+                    <select id="resourceSelect" class="form-control">
+                        <option value="">Choose a resource...</option>
+                    </select>
+                </div>
+                
+                <div id="qrDisplayArea" style="display: none;">
+                    <div class="qr-display">
+                        <h3>Resource QR Code</h3>
+                        <p>Scan this code to view resource details</p>
+                        <div id="qr-code"></div>
+                        <div class="qr-actions">
+                            <button class="btn btn-outline" id="downloadQRBtn">
+                                <i class="fas fa-download"></i> Download QR
+                            </button>
+                            <button class="btn btn-primary" id="printQRBtn">
+                                <i class="fas fa-print"></i> Print QR
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-info">
+                        <h3>Resource Information</h3>
+                        <div id="resourceDetails">
+                            <!-- Resource details will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- QR Code Success Section -->
+            <div class="section" id="qrSuccessSection">
+                <div class="upload-success">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2>Resource Added Successfully!</h2>
+                    <p>Your resource has been listed and a unique QR code has been generated.</p>
+                    
+                    <div class="qr-display" id="successQRDisplay">
+                        <!-- QR code will be displayed here -->
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <button class="btn btn-primary" id="addAnotherResourceBtn">
+                            <i class="fas fa-plus"></i> Add Another Resource
+                        </button>
+                        <button class="btn btn-outline" id="viewResourceBtn">
+                            <i class="fas fa-eye"></i> View Resource
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>CampusShare</h3>
+                    <p>Connecting students to share academic resources and build a sustainable campus community.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Browse Resources</a></li>
+                        <li><a href="#">My Listings</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 CampusShare. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const addResourceCard = document.getElementById('addResourceCard');
+        const myResourcesCard = document.getElementById('myResourcesCard');
+        const qrGeneratorCard = document.getElementById('qrGeneratorCard');
+        const addResourceSection = document.getElementById('addResourceSection');
+        const myResourcesSection = document.getElementById('myResourcesSection');
+        const qrGeneratorSection = document.getElementById('qrGeneratorSection');
+        const qrSuccessSection = document.getElementById('qrSuccessSection');
+        const resourcesContainer = document.getElementById('resourcesContainer');
+        const resourceSelect = document.getElementById('resourceSelect');
+        const qrDisplayArea = document.getElementById('qrDisplayArea');
+        const qrCodeElement = document.getElementById('qr-code');
+        const successQRDisplay = document.getElementById('successQRDisplay');
+        const resourceDetails = document.getElementById('resourceDetails');
+        const downloadQRBtn = document.getElementById('downloadQRBtn');
+        const printQRBtn = document.getElementById('printQRBtn');
+        const addAnotherResourceBtn = document.getElementById('addAnotherResourceBtn');
+        const viewResourceBtn = document.getElementById('viewResourceBtn');
+        const cancelResourceAdd = document.getElementById('cancelResourceAdd');
+        const submitResourceAdd = document.getElementById('submitResourceAdd');
+        
+        // Form elements
+        const documentTypes = document.querySelectorAll('.document-type');
+        const resourceTitle = document.getElementById('resourceTitle');
+        const resourceCourse = document.getElementById('resourceCourse');
+        const resourceDescription = document.getElementById('resourceDescription');
+        const resourceAuthor = document.getElementById('resourceAuthor');
+        const resourceYear = document.getElementById('resourceYear');
+        const resourcePrice = document.getElementById('resourcePrice');
+        const resourceLocation = document.getElementById('resourceLocation');
+        const resourceFileUpload = document.getElementById('resourceFileUpload');
+        const resourceFileInput = document.getElementById('resourceFileInput');
+        const resourceFileList = document.getElementById('resourceFileList');
+        
+        // Sample data for resources
+        let userResources = [
+            {
+                id: 1,
+                title: "Introduction to Algorithms",
+                type: "textbook",
+                course: "CS 301 - Data Structures",
+                description: "Third edition, excellent condition with minimal highlighting. Covers all fundamental algorithms and data structures.",
+                author: "Cormen, Leiserson, Rivest, Stein",
+                year: "2022",
+                price: "$35",
+                location: "Main Library",
+                status: "available",
+                dateAdded: "2023-10-15",
+                qrCode: null
+            },
+            {
+                id: 2,
+                title: "Organic Chemistry Lecture Notes",
+                type: "notes",
+                course: "CHEM 202 - Organic Chemistry",
+                description: "Complete notes from Dr. Wilson's lectures, including diagrams and reaction mechanisms.",
+                author: "Dr. Wilson",
+                year: "Fall 2023",
+                price: "Free",
+                location: "Science Building",
+                status: "claimed",
+                dateAdded: "2023-11-05",
+                qrCode: null
+            },
+            {
+                id: 3,
+                title: "Graphing Calculator",
+                type: "equipment",
+                course: "MATH 250 - Calculus",
+                description: "TI-84 Plus, perfect condition. Available for semester rental.",
+                author: "Texas Instruments",
+                year: "2021",
+                price: "$10/week",
+                location: "Engineering Hall",
+                status: "rented",
+                dateAdded: "2023-09-20",
+                qrCode: null
+            }
+        ];
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const currentUser = localStorage.getItem('currentUser');
+            const userRole = localStorage.getItem('userRole');
+            
+            if (!currentUser || !userRole) {
+                // Redirect to login if not authenticated
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            setupEventListeners();
+            renderResources();
+            populateResourceSelect();
+        });
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Menu card clicks
+            addResourceCard.addEventListener('click', function() {
+                showSection('addResourceSection');
+            });
+            
+            myResourcesCard.addEventListener('click', function() {
+                showSection('myResourcesSection');
+                renderResources();
+            });
+            
+            qrGeneratorCard.addEventListener('click', function() {
+                showSection('qrGeneratorSection');
+                populateResourceSelect();
+            });
+            
+            // Document type selection
+            documentTypes.forEach(type => {
+                type.addEventListener('click', function() {
+                    documentTypes.forEach(t => t.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Resource selection for QR generation
+            resourceSelect.addEventListener('change', function() {
+                const resourceId = this.value;
+                if (resourceId) {
+                    const resource = userResources.find(r => r.id == resourceId);
+                    if (resource) {
+                        generateQRCode(resource);
+                        displayResourceDetails(resource);
+                        qrDisplayArea.style.display = 'block';
+                    }
+                } else {
+                    qrDisplayArea.style.display = 'none';
+                }
+            });
+            
+            // Form actions
+            cancelResourceAdd.addEventListener('click', function() {
+                showSection(null);
+                resetForms();
+            });
+            
+            submitResourceAdd.addEventListener('click', function() {
+                addNewResource();
+            });
+            
+            // File upload handling
+            resourceFileUpload.addEventListener('click', function() {
+                resourceFileInput.click();
+            });
+            
+            resourceFileInput.addEventListener('change', function() {
+                handleFileSelect(this.files);
+            });
+            
+            // QR code actions
+            downloadQRBtn.addEventListener('click', downloadQRCode);
+            printQRBtn.addEventListener('click', printQRCode);
+            
+            // Success screen actions
+            addAnotherResourceBtn.addEventListener('click', function() {
+                showSection('addResourceSection');
+                resetForms();
+            });
+            
+            viewResourceBtn.addEventListener('click', function() {
+                showSection('myResourcesSection');
+                renderResources();
+            });
+
+            // Back to Home button
+            document.getElementById('backToHomeBtn').addEventListener('click', function() {
+                window.location.href = 'home_page.html';
+            });
+        }
+        
+        // Show/hide sections
+        function showSection(sectionId) {
+            // Hide all sections first
+            addResourceSection.classList.remove('active');
+            myResourcesSection.classList.remove('active');
+            qrGeneratorSection.classList.remove('active');
+            qrSuccessSection.classList.remove('active');
+            
+            // Show selected section
+            if (sectionId) {
+                document.getElementById(sectionId).classList.add('active');
+            }
+        }
+        
+        // Render user resources
+        function renderResources() {
+            resourcesContainer.innerHTML = '';
+            
+            userResources.forEach(resource => {
+                const resourceCard = document.createElement('div');
+                resourceCard.className = 'resource-card';
+                resourceCard.innerHTML = `
+                    <div class="resource-header">
+                        <div class="resource-type">
+                            <i class="fas ${getResourceIcon(resource.type)}"></i>
+                            <span>${getResourceTypeName(resource.type)}</span>
+                        </div>
+                        <div class="resource-status status-${resource.status}">
+                            ${resource.status.charAt(0).toUpperCase() + resource.status.slice(1)}
+                        </div>
+                    </div>
+                    <div class="resource-body">
+                        <h3 class="resource-title">${resource.title}</h3>
+                        <p class="resource-description">${resource.description}</p>
+                        <div class="resource-meta">
+                            <span>${resource.course}</span>
+                            <span>${resource.price}</span>
+                        </div>
+                        <div class="resource-actions">
+                            <button class="btn btn-outline btn-small view-qr-btn" data-id="${resource.id}">
+                                <i class="fas fa-qrcode"></i> View QR
+                            </button>
+                            <button class="btn btn-primary btn-small manage-resource-btn" data-id="${resource.id}">
+                                <i class="fas fa-edit"></i> Manage
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                resourcesContainer.appendChild(resourceCard);
+            });
+            
+            // Add event listeners to resource buttons
+            document.querySelectorAll('.view-qr-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const resourceId = this.getAttribute('data-id');
+                    showSection('qrGeneratorSection');
+                    resourceSelect.value = resourceId;
+                    resourceSelect.dispatchEvent(new Event('change'));
+                });
+            });
+            
+            document.querySelectorAll('.manage-resource-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const resourceId = this.getAttribute('data-id');
+                    alert(`In a real application, this would open the management interface for resource ${resourceId}`);
+                });
+            });
+        }
+        
+        // Populate resource select dropdown
+        function populateResourceSelect() {
+            resourceSelect.innerHTML = '<option value="">Choose a resource...</option>';
+            
+            userResources.forEach(resource => {
+                const option = document.createElement('option');
+                option.value = resource.id;
+                option.textContent = `${resource.title} (${resource.course})`;
+                resourceSelect.appendChild(option);
+            });
+        }
+        
+        // Generate QR code for a resource
+        function generateQRCode(resource) {
+            // Clear previous QR code
+            qrCodeElement.innerHTML = '';
+            
+            // Generate unique URL for the resource
+            const resourceUrl = `https://campusshare.edu/resource/${resource.id}`;
+            
+            // Generate QR code
+            QRCode.toCanvas(qrCodeElement, resourceUrl, {
+                width: 200,
+                height: 200,
+                margin: 1,
+                color: {
+                    dark: '#2E86AB',
+                    light: '#FFFFFF'
+                }
+            }, function(error) {
+                if (error) console.error(error);
+            });
+        }
+        
+        // Display resource details
+        function displayResourceDetails(resource) {
+            resourceDetails.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                    <div><strong>Title:</strong></div>
+                    <div>${resource.title}</div>
+                    
+                    <div><strong>Course:</strong></div>
+                    <div>${resource.course}</div>
+                    
+                    <div><strong>Type:</strong></div>
+                    <div>${getResourceTypeName(resource.type)}</div>
+                    
+                    <div><strong>Price:</strong></div>
+                    <div>${resource.price}</div>
+                    
+                    <div><strong>Status:</strong></div>
+                    <div>${resource.status.charAt(0).toUpperCase() + resource.status.slice(1)}</div>
+                    
+                    <div><strong>Location:</strong></div>
+                    <div>${resource.location}</div>
+                </div>
+            `;
+        }
+        
+        // Add new resource
+        function addNewResource() {
+            const selectedType = document.querySelector('.document-type.selected');
+            
+            if (!selectedType) {
+                alert('Please select a resource type.');
+                return;
+            }
+            
+            if (!resourceTitle.value.trim()) {
+                alert('Please enter a resource title.');
+                return;
+            }
+            
+            if (!resourceCourse.value.trim()) {
+                alert('Please enter a course/subject.');
+                return;
+            }
+            
+            // Create new resource object
+            const newResource = {
+                id: userResources.length + 1,
+                title: resourceTitle.value,
+                type: selectedType.getAttribute('data-type'),
+                course: resourceCourse.value,
+                description: resourceDescription.value || 'No description provided.',
+                author: resourceAuthor.value || 'Unknown',
+                year: resourceYear.value || 'Not specified',
+                price: resourcePrice.value || 'Free',
+                location: resourceLocation.value || 'Campus',
+                status: 'available',
+                dateAdded: new Date().toISOString().split('T')[0],
+                qrCode: null
+            };
+            
+            // Add to resources array
+            userResources.unshift(newResource);
+            
+            // Generate QR code for success display
+            successQRDisplay.innerHTML = '';
+            const resourceUrl = `https://campusshare.edu/resource/${newResource.id}`;
+            
+            QRCode.toCanvas(successQRDisplay, resourceUrl, {
+                width: 200,
+                height: 200,
+                margin: 1,
+                color: {
+                    dark: '#2E86AB',
+                    light: '#FFFFFF'
+                }
+            }, function(error) {
+                if (error) console.error(error);
+            });
+            
+            // Show success section
+            showSection('qrSuccessSection');
+        }
+        
+        // Handle file selection
+        function handleFileSelect(files) {
+            // Clear previous files
+            resourceFileList.innerHTML = '';
+            
+            if (files.length > 0) {
+                const file = files[0];
+                
+                // Check file size (5MB limit)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size exceeds 5MB limit. Please choose a smaller file.');
+                    return;
+                }
+                
+                // Create file item
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <i class="fas fa-file-image file-icon"></i>
+                        <div>
+                            <div>${file.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--gray);">${formatFileSize(file.size)}</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn-icon remove-file">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                resourceFileList.appendChild(fileItem);
+                
+                // Enable remove button
+                fileItem.querySelector('.remove-file').addEventListener('click', function() {
+                    resourceFileList.innerHTML = '';
+                    resourceFileInput.value = '';
+                });
+            }
+        }
+        
+        // Download QR code
+        function downloadQRCode() {
+            const canvas = qrCodeElement.querySelector('canvas');
+            const link = document.createElement('a');
+            link.download = `campusshare-qr-${resourceSelect.value}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Print QR code
+        function printQRCode() {
+            const canvas = qrCodeElement.querySelector('canvas');
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print QR Code</title>
+                        <style>
+                            body { 
+                                font-family: Arial, sans-serif; 
+                                text-align: center; 
+                                padding: 20px;
+                            }
+                            h2 { color: #2E86AB; }
+                            img { margin: 20px 0; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>CampusShare Resource QR Code</h2>
+                        <img src="${canvas.toDataURL('image/png')}" alt="QR Code">
+                        <p>Scan this code to view resource details</p>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        // Reset all forms
+        function resetForms() {
+            // Reset resource form
+            documentTypes.forEach(type => type.classList.remove('selected'));
+            resourceTitle.value = '';
+            resourceCourse.value = '';
+            resourceDescription.value = '';
+            resourceAuthor.value = '';
+            resourceYear.value = '';
+            resourcePrice.value = '';
+            resourceLocation.value = '';
+            resourceFileList.innerHTML = '';
+            resourceFileInput.value = '';
+            
+            // Reset QR generator
+            resourceSelect.value = '';
+            qrDisplayArea.style.display = 'none';
+        }
+        
+        // Helper functions
+        function getResourceIcon(type) {
+            const icons = {
+                'textbook': 'fa-book',
+                'notes': 'fa-sticky-note',
+                'slides': 'fa-presentation',
+                'equipment': 'fa-tools',
+                'other': 'fa-file'
+            };
+            return icons[type] || 'fa-file';
+        }
+        
+        function getResourceTypeName(type) {
+            const names = {
+                'textbook': 'Textbook',
+                'notes': 'Class Notes',
+                'slides': 'Lecture Slides',
+                'equipment': 'Lab Equipment',
+                'other': 'Other'
+            };
+            return names[type] || 'Resource';
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+    </script>
+</body>
+</html>
